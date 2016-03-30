@@ -78,7 +78,8 @@ namespace WpadAudit
                                 {
                                     processPath = GetModuleFileName(row.OwningPid);
                                     pid = row.OwningPid;
-                                    processName = Path.GetFileNameWithoutExtension(processPath);                                                                 
+                                    processName = Path.GetFileNameWithoutExtension(processPath);
+                                    return;
                                 }
 
                                 ptrRow = (IntPtr)((long)ptrRow + NativeMethods.TcpRowSize);
