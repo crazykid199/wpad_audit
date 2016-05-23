@@ -157,10 +157,7 @@ namespace WpadAudit
                     
                     // Look up the connection in the tcp table to get the process
                     ProcessInfo.ProcessFromPort(((IPEndPoint)client.Client.RemoteEndPoint).Port, out processName, out pid, out processPath);
-                    
-                    if (Configuration.DoNotDisplayProcess != null && Configuration.DoNotDisplayProcess.Contains(processName))
-                        return;
-
+                                       
                     Match host = Regex.Match(message, ConnectRegEx);
 
                     message = SanitizeHttpMessage(message);

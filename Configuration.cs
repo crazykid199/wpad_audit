@@ -32,14 +32,13 @@ namespace WpadAudit
         public static IPAddress         ProxyServer;
         public static int               PacFileHostPort;
         public static string[]          HostsToProxy;
-        public static string[]          DoNotDisplayProcess;        
         public static int               CaptureReadTimeout;
         public static int?              DeviceNumber;
         public static bool              EnableLocalProxy;
         public static PhysicalAddress   CaptureMacAddress;
         public static int               ProxyPort;
         public static IPEndPoint        ProxyServerEndPoint;
-        public static string[]          DoNotPoisonProcess;
+        public static string            ProcessToPoison;
 
         /// <summary>
         /// Read settings from the config into an easy to use class
@@ -55,7 +54,7 @@ namespace WpadAudit
                 ProxyPort = (int)GetValue("proxyPort", true, (value) => { return int.Parse(value); });
                 CaptureReadTimeout = (int)GetValue("captureReadTimeout", true, (value) => { return int.Parse(value); });
                 ProxyServer = (IPAddress)GetValue("proxyServer", false, (value) => { return IPAddress.Parse(value); });
-
+                ProcessToPoison = (string)GetValue("processToPoison", false, (value) => { return value; });
                 HostsToProxy = (string[])GetValue("hostsToProxy", false, (value) =>
                 {
                     if (!string.IsNullOrEmpty(value))
@@ -63,33 +62,8 @@ namespace WpadAudit
                     else
                         return null;
                 });
-
-                DoNotDisplayProcess = (string[])GetValue("doNotDisplayProcess", false, (value) =>
-                {
-                    string[] temp = new string[0];
-
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        temp = value.Split(',');
-                        for (int index = 0; index < temp.Length; index++)
-                            temp[index] = temp[index].ToLower().Trim();
-                    }                    
-                    return temp;
-                });
-
-                DoNotPoisonProcess = (string[])GetValue("doNotPoisonProcess", false, (value) =>
-                {
-                    string[] temp = new string[0];
-
-                    if (!string.IsNullOrEmpty(value))
-                    {
-                        temp = value.Split(',');
-                        for (int index = 0; index < temp.Length; index++)
-                            temp[index] = temp[index].ToLower().Trim();
-                    }
-                    return temp;
-                });                
-
+           
+                
                 // Device number needs to be configured at this point
 				// in order for the proxy server endpoint to be set
 				if( DeviceNumber.HasValue )
