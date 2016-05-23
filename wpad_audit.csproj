@@ -38,6 +38,8 @@
     <DefineConstants>TRACE;DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -95,6 +97,7 @@
       <HintPath>packages\SharpPcap.4.2.0\lib\net\SharpPcap.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseWorker.cs" />

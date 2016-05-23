@@ -112,26 +112,15 @@ namespace WpadAudit
                         // Look up the connection in the tcp table to get the process
                         ProcessInfo.ProcessFromPort(((IPEndPoint)context.Request.RemoteEndPoint).Port, out processName, out pid, out processPath);
 
-                        if (Configuration.ProcessToPoison != null && Configuration.ProcessToPoison.Contains(processName))                        
-                        {
-                            Logger.AddToInfoView("Received request from {0} {1} for wpad.dat", context.Request.RemoteEndPoint.Address, processName);
-                            Logger.AddToInfoView("Return pac file with proxy {0}:{1}", this.ProxyServer.Address, this.ProxyServer.Port);
+                        Logger.AddToInfoView("Received request from {0} {1} for wpad.dat", context.Request.RemoteEndPoint.Address, processName);
+                        Logger.AddToInfoView("Return pac file with proxy {0}:{1}", this.ProxyServer.Address, this.ProxyServer.Port);
 
-                            byte[] javaScript = UTF8Encoding.Default.GetBytes(this.PacFileJavaScript);
-                            context.Response.AddHeader("Cache-Control", "no-cache");
-                            context.Response.ContentType = PacFileContentType;
-                            context.Response.ContentLength64 = javaScript.Length;
-                            context.Response.OutputStream.Write(javaScript, 0, javaScript.Length);
-                            context.Response.OutputStream.Close();
-                        }
-                        else
-                        {
-                            string processToPoison = string.IsNullOrEmpty(Configuration.ProcessToPoison) ? "Not defined in app.config" : Configuration.ProcessToPoison;
-                            Logger.AddToInfoView("Ignoring request from {0} {1} for wpad.dat. The configured poison process name is {2}", context.Request.RemoteEndPoint.Address, processName, processToPoison);
-                            context.Response.StatusCode = 404;
-                            context.Response.StatusDescription = "Not Found";
-                            context.Response.Close();
-                        }
+                        byte[] javaScript = UTF8Encoding.Default.GetBytes(this.PacFileJavaScript);
+                        context.Response.AddHeader("Cache-Control", "no-cache");
+                        context.Response.ContentType = PacFileContentType;
+                        context.Response.ContentLength64 = javaScript.Length;
+                        context.Response.OutputStream.Write(javaScript, 0, javaScript.Length);
+                        context.Response.OutputStream.Close();                        
                     }
                 }            
             }

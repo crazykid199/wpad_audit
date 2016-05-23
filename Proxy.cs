@@ -47,7 +47,7 @@ namespace WpadAudit
     public class Proxy : BaseWorker
     {
         private static readonly byte[] ConnectCmdResponse = UTF8Encoding.UTF8.GetBytes("HTTP/1.1 200 Connection established\r\n\r\n");
-        private static readonly byte[] ServiceUnavailableResponse = UTF8Encoding.UTF8.GetBytes("HTTP/1.1 503 Service unavailable\r\n\r\n");
+        private static readonly byte[] ServiceUnavailableResponse = UTF8Encoding.UTF8.GetBytes("HTTP/1.1 503 wpad_audit will not proxy requests\r\n\r\n");
 
         private const int    Strength = 2048;
         private const string Password = "password";

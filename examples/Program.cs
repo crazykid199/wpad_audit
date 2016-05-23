@@ -4,6 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
+using System.IO;
+using System.Net.Http;
+using System.Net.Security;
 
 namespace WpadAuditExample
 {
@@ -12,9 +15,40 @@ namespace WpadAuditExample
         static void Main(string[] args)
         {
             // Example one
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://httpbin.org/get");
-            request.GetResponse();
+            SendRequest("http://httpbin.org/get");
+            
+            // Example two
+            ServicePointManager.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) =>
+            {
+                return true;
+            };
 
+            SendRequest("https://httpbin.org/get");
+
+            Console.WriteLine("Press any key to exit");
+            Console.Read();
+        }
+
+        static void SendRequest(string url)
+        {
+            HttpWebRequest request = null;
+            HttpWebResponse response = null;
+         
+            try
+            {
+                request = (HttpWebRequest)HttpWebRequest.Create(url);
+                response = (HttpWebResponse)request.GetResponse();
+            }
+            catch(WebException ex)
+            {
+                // Swallow the expection. wpad_audit will short circuit the
+                // http connection. Don't really care what happens
+                // as long as the request shows up in wpad_audit and the 
+                // proxy below resolves to the wpad_audit proxy
+            }
+            
+            Uri proxy = request.Proxy.GetProxy(new Uri(url));
+            Console.Out.WriteLine("Used proxy {0} for {1}", proxy.Host, url);                        
         }
     }
 }

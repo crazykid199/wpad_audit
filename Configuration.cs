@@ -38,7 +38,7 @@ namespace WpadAudit
         public static PhysicalAddress   CaptureMacAddress;
         public static int               ProxyPort;
         public static IPEndPoint        ProxyServerEndPoint;
-        public static string            ProcessToPoison;
+        public static string            OnlyReportProxyResultForProcess;
 
         /// <summary>
         /// Read settings from the config into an easy to use class
@@ -54,7 +54,7 @@ namespace WpadAudit
                 ProxyPort = (int)GetValue("proxyPort", true, (value) => { return int.Parse(value); });
                 CaptureReadTimeout = (int)GetValue("captureReadTimeout", true, (value) => { return int.Parse(value); });
                 ProxyServer = (IPAddress)GetValue("proxyServer", false, (value) => { return IPAddress.Parse(value); });
-                ProcessToPoison = (string)GetValue("processToPoison", false, (value) => { return value; });
+                OnlyReportProxyResultForProcess = (string)GetValue("onlyReportProxyResultForProcess", false, (value) => { return value; });
                 HostsToProxy = (string[])GetValue("hostsToProxy", false, (value) =>
                 {
                     if (!string.IsNullOrEmpty(value))
