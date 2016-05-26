@@ -46,6 +46,8 @@ namespace WpadAudit
 
                     Console.Clear();
 
+                    Logger.AddToInfoView("Once the server has started press any key to stop it.");                
+
                     IPEndPoint pacFileHost = new IPEndPoint(NetworkCapture.GetDeviceIp(deviceNumber), Configuration.PacFileHostPort);
 
                     workers = new List<BaseWorker>()
@@ -54,14 +56,16 @@ namespace WpadAudit
                         new Proxy(),
                         new NetworkCapture(deviceNumber, Configuration.PacFileHostPort, Configuration.ProxyServerEndPoint),
                     };
-
+                    
                     List<Task> tasks = new List<Task>();
-
+                    
                     workers.ForEach(worker =>
                     {
                         if (worker.Enabled())
                             tasks.Add(worker.Start());
                     });
+
+                    tasks.Add( Task.Factory.StartNew(() => HandleUserInput(), BaseWorker.StopToken.Token));
 
                     if (NameServices.FlushNameServices())
                         Task.WaitAny(tasks.ToArray());
@@ -81,9 +85,16 @@ namespace WpadAudit
                     });
 
                 NameServices.FlushNameServices();
-                Console.WriteLine("Press any key to exit");
-                Console.ReadKey();
             }
+        }
+
+        /// <summary>
+        /// Handles user input to stop
+        /// </summary>
+        private static void HandleUserInput()
+        {
+            Console.ReadKey();
+            BaseWorker.StopToken.Cancel();
         }
 
         /// <summary>
