@@ -37,9 +37,7 @@ namespace WpadAudit
         public static bool              EnableLocalProxy;
         public static PhysicalAddress   CaptureMacAddress;
         public static int               ProxyPort;
-        public static IPEndPoint        ProxyServerEndPoint;
-        public static string            OnlyReportProxyResultForProcess;
-
+        public static IPEndPoint        ProxyServerEndPoint;       
         /// <summary>
         /// Read settings from the config into an easy to use class
         /// </summary>
@@ -54,7 +52,7 @@ namespace WpadAudit
                 ProxyPort = (int)GetValue("proxyPort", true, (value) => { return int.Parse(value); });
                 CaptureReadTimeout = (int)GetValue("captureReadTimeout", true, (value) => { return int.Parse(value); });
                 ProxyServer = (IPAddress)GetValue("proxyServer", false, (value) => { return IPAddress.Parse(value); });
-                OnlyReportProxyResultForProcess = (string)GetValue("onlyReportProxyResultForProcess", false, (value) => { return value; });
+                
                 HostsToProxy = (string[])GetValue("hostsToProxy", false, (value) =>
                 {
                     if (!string.IsNullOrEmpty(value))
@@ -62,11 +60,10 @@ namespace WpadAudit
                     else
                         return null;
                 });
-           
-                
+
                 // Device number needs to be configured at this point
-				// in order for the proxy server endpoint to be set
-				if( DeviceNumber.HasValue )
+                // in order for the proxy server endpoint to be set
+                if ( DeviceNumber.HasValue )
 				{
 				    if( EnableLocalProxy )
                         ProxyServerEndPoint = new IPEndPoint(NetworkCapture.GetDeviceIp(DeviceNumber.Value), ProxyPort);
