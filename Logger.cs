@@ -29,8 +29,7 @@ namespace WpadAudit
     public static class Logger
     {
         private static object Locker = new object();
-
-
+        
         static Logger()
         {
             Console.WindowWidth = Console.LargestWindowWidth / 2;
@@ -47,6 +46,12 @@ namespace WpadAudit
                 Console.WriteLine(string.Format("{0} {1}",location, ex.Message));
                 Console.ForegroundColor = ConsoleColor.White;
             }
+        }
+
+        public static void AddToInfoView(Func<bool> condition, string format, params object[] args)
+        {
+            if (condition())
+                AddToInfoView(format, args);
         }
 
         public static void AddToInfoView(string format, params object[] args)

@@ -157,14 +157,16 @@ namespace WpadAudit
                     
                     // Look up the connection in the tcp table to get the process
                     ProcessInfo.ProcessFromPort(((IPEndPoint)client.Client.RemoteEndPoint).Port, out processName, out pid, out processPath);
-                                       
+
+                    Func<bool> canDisplay = new Func<bool>( () => { return Configuration.ProcessToDisplay == processName; } );
+
                     Match host = Regex.Match(message, ConnectRegEx);
 
                     message = SanitizeHttpMessage(message);
-                    Logger.AddToInfoView(HttpMessageViaProxy, processName, pid, remotePort, message);
+                    Logger.AddToInfoView( canDisplay, HttpMessageViaProxy, processName, pid, remotePort, message);
 
                     // If the process is killed then process path will be null
-                    if (!string.IsNullOrEmpty(processPath))
+                    if (!string.IsNullOrEmpty(processPath) && canDisplay() )
                         FindCertificateValidationCallbacks(processPath);
 
                     // The regex to check for CONNECT failed so this must be HTTP
@@ -188,19 +190,19 @@ namespace WpadAudit
                             message = this.GetMessageHeaders(clientSslStream);
 
                             if (message.Length == 0)
-                                Logger.AddToInfoView(ProcessDidNotAcceptCert, processName, pid, remotePort, host);
+                                Logger.AddToInfoView(canDisplay, ProcessDidNotAcceptCert, processName, pid, remotePort, host);
                             else
                             {
                                 message = SanitizeHttpMessage(message);
 
-                                Logger.AddToInfoView(ProcessAcceptedCert, processName, pid, remotePort, host, message);
+                                Logger.AddToInfoView(canDisplay, ProcessAcceptedCert, processName, pid, remotePort, host, message);
                                 clientSslStream.Write(ServiceUnavailableResponse, 0, ServiceUnavailableResponse.Length);
                                 clientSslStream.Flush();
                             }
                         }
                         catch(IOException)
                         {
-                            Logger.AddToInfoView(ProcessDidNotAcceptCert, processName, pid, remotePort, host);
+                            Logger.AddToInfoView(canDisplay, ProcessDidNotAcceptCert, processName, pid, remotePort, host);
                         }
                     }             
                 }
