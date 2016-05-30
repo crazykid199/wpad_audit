@@ -158,7 +158,7 @@ namespace WpadAudit
                     // Look up the connection in the tcp table to get the process
                     ProcessInfo.ProcessFromPort(((IPEndPoint)client.Client.RemoteEndPoint).Port, out processName, out pid, out processPath);
 
-                    Func<bool> canDisplay = new Func<bool>( () => { return Configuration.ProcessToDisplay == processName; } );
+                    Func<bool> canDisplay = new Func<bool>(() => { return string.Compare(Configuration.ProcessToDisplay, processName, true) == 0; });
 
                     Match host = Regex.Match(message, ConnectRegEx);
 

@@ -1,12 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net;
-using System.IO;
-using System.Net.Http;
-using System.Net.Security;
 
 namespace WpadAuditExample
 {
@@ -37,6 +30,7 @@ namespace WpadAuditExample
             try
             {
                 request = (HttpWebRequest)HttpWebRequest.Create(url);
+                //request.Proxy = null;
                 response = (HttpWebResponse)request.GetResponse();
             }
             catch(WebException ex)
@@ -46,9 +40,12 @@ namespace WpadAuditExample
                 // as long as the request shows up in wpad_audit and the 
                 // proxy below resolves to the wpad_audit proxy
             }
-            
-            Uri proxy = request.Proxy.GetProxy(new Uri(url));
-            Console.Out.WriteLine("Used proxy {0} for {1}", proxy.Host, url);                        
+
+            if (request.Proxy != null)
+            {
+                Uri proxy = request.Proxy.GetProxy(new Uri(url));
+                Console.Out.WriteLine("Used proxy {0} for {1}", proxy.Host, url);
+            }
         }
     }
 }
